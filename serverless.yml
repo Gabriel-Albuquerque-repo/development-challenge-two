@@ -1,0 +1,110 @@
+service: med-cloud-main
+frameworkVersion: "2 || 3"
+
+provider:
+    name: aws
+    runtime: nodejs14.x
+    region: sa-east-1
+    stage: dev
+    httpApi:
+        cors: true
+    lambdaHashingVersion: 20201221
+    environment:
+        region: ${self:provider.region}
+        PATIENTS_TABLE_NAME: ${self:custom.patientsTableName}
+
+custom:
+    patientsTableName: Patients-Table
+    dynamodb:
+        stages:
+            - dev
+        start:
+            port: 8000
+            inMemory: true
+            migrate: true
+        migration:
+            dir: tests/in-memory/migrations
+
+functions:
+    createPatient:
+        name: create-patient
+        handler: src/lambdas/CreatePatient.handler
+        events:
+            - httpApi:
+                  path: /create/patient
+                  method: POST
+        iamRoleStatements:
+            - Effect: "Allow"
+              Action:
+                  - "dynamodb:Query"
+                  - "dynamodb:PutItem"
+              Resource:
+                  - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.patientsTableName}"
+                  - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.patientsTableName}/index/email"
+    deletePatient:
+        name: delete-patient
+        handler: src/lambdas/DeletePatient.handler
+        events:
+            - httpApi:
+                  path: /delete/patient
+                  method: POST
+        iamRoleStatements:
+            - Effect: "Allow"
+              Action:
+                  - "dynamodb:DeleteItem"
+              Resource:
+                  - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.patientsTableName}"
+                  - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.patientsTableName}/index/email"
+    updatePatient:
+        name: update-patient
+        handler: src/lambdas/UpdatePatient.handler
+        events:
+            - httpApi:
+                  path: /update/patient
+                  method: PATCH
+        iamRoleStatements:
+            - Effect: "Allow"
+              Action:
+                  - "dynamodb:UpdateItem"
+              Resource:
+                  - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.patientsTableName}"
+                  - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.patientsTableName}/index/email"
+    getPatients:
+        name: get-patients
+        handler: src/lambdas/GetPatients.handler
+        events:
+            - httpApi:
+                  path: /get/patients
+                  method: GET
+        iamRoleStatements:
+            - Effect: "Allow"
+              Action:
+                  - "dynamodb:ScanItem"
+              Resource:
+                  - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.patientsTableName}"
+                  - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.patientsTableName}/index/email"
+
+plugins:
+    - serverless-plugin-typescript
+    - serverless-dotenv-plugin
+    - serverless-iam-roles-per-function
+    - serverless-pseudo-parameters
+    - serverless-dynamodb-local
+    - serverless-offline
+
+resources:
+    Resources:
+        PatientsTable:
+            Type: AWS::DynamoDB::Table
+            DeletionPolicy: Retain
+            Properties:
+                TableName: ${self:custom.patientsTableName}
+                AttributeDefinitions:
+                    - AttributeName: email
+                      AttributeType: S
+                KeySchema:
+                    - AttributeName: email
+                      KeyType: HASH
+                ProvisionedThroughput:
+                    ReadCapacityUnits: 1
+                    WriteCapacityUnits: 1
