@@ -50,24 +50,24 @@
 
 ### Observações para deploy:
 
--   Primeiro, execute o yarn install;
+-   Primeiro, execute o <strong>yarn install<strong/>;
 -   Precisa instalar o serverless framework;
 -   Criar uma conta na AWS e configurar suas credentials no serverless framework;
 -   Crie um arquivo .env e insira essas variáveis:
-    -- PATIENTS_TABLE_NAME = Patients-Table;
-    -- IS_PRODUCTION = true;
--   Para deploy, o comando é: yarn deploy/serverless deploy.
+    -   <strong>PATIENTS_TABLE_NAME = Patients-Table<strong/>;
+    -   <strong>IS_PRODUCTION = true<strong/>;
+-   Para deploy, o comando é: <strong>yarn deploy/serverless deploy<strong/>.
 
 ### Observações para teste offline:
 
 -   Para executar o serverless offline é necessário que você faça uma conta na Oracle e instale o SDK do Java: https://www.oracle.com/java/technologies/downloads/#java8.
--   Em seguida, instale o módulo do dynamo usando o comando: sls install dynamodb;
--   Mude a variável IS_PRODUCTION no arquivo .env para false;
--   Comando para subir o servidor: sls offline start;
--   Para usar o offline, use Insomnia ou Postman. A URL é localhost:3000.
+-   Em seguida, instale o módulo do dynamo usando o comando: <strong>sls install dynamodb<strong/>;
+-   Mude a variável <strong>IS_PRODUCTION<strong/> no arquivo .env para false;
+-   Comando para subir o servidor: <strong>sls offline start<strong/>;
+-   Para usar o offline, use Insomnia ou Postman. A URL é <strong>localhost:3000<strong/>.
 
 ### Observações para teste com jest:
 
 -   Crie um arquivo .ent.test e insira a variável:
-    -- PATIENTS_TABLE_NAME = Patients-Table;
--   Execute o yarn test.
+    -   <strong>PATIENTS_TABLE_NAME = Patients-Table<strong/>;
+-   Execute o <strong>yarn test<strong/>.
