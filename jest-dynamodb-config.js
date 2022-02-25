@@ -1,20 +1,20 @@
 module.exports = {
-  tables: [
-    {
-      TableName: 'Patients-Table',
-      KeySchema: [
+    tables: [
         {
-          AttributeName: 'email',
-          KeyType: 'HASH',
+            TableName: 'Patients-Table',
+            KeySchema: [
+                {
+                    AttributeName: 'email',
+                    KeyType: 'HASH',
+                },
+            ],
+            AttributeDefinitions: [
+                {
+                    AttributeName: 'email',
+                    AttributeType: 'S',
+                },
+            ],
+            BillingMode: 'PAY_PER_REQUEST',
         },
-      ],
-      AttributeDefinitions: [
-        {
-          AttributeName: 'email',
-          AttributeType: 'S',
-        },
-      ],
-      BillingMode: 'PAY_PER_REQUEST',
-    },
-  ],
+    ],
 };

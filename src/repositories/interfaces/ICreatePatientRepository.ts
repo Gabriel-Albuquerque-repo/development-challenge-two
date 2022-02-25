@@ -2,7 +2,7 @@
 import { Patient } from '../../entities/Patient';
 
 export interface ICreatePatientRepository {
-  checkIfPatientExistsByEmail(email: string): Promise<boolean>;
+    checkIfPatientExistsByEmail(email: string): Promise<boolean>;
 
-  savePatient(patient: Patient): Promise<void>;
+    savePatient(patient: Patient): Promise<void>;
 }

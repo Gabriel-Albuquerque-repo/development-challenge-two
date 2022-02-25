@@ -2,3 +2,5 @@ node_modules
 .serverless
 .build
 .dynamodb
+.env.test
+.env
